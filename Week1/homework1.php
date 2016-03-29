@@ -4,7 +4,7 @@ class Frequency
 {
     const MIN_WORD_LENGTH = 2;
     const NUM_TOP_RESULTS = 25;
-    const STOP_WORD_FILE = "../stop_words.txt";
+    const STOP_WORD_FILE = "stop_words.txt";
 
     /**
      * Contains a key value pair of [ word : count ]
@@ -17,7 +17,7 @@ class Frequency
 
     public function run()
     {
-        $inputFile = "../" . $this->getInputFile();
+        $inputFile = __DIR__ . "/../" . $this->getInputFile();
 
         if (!file_exists($inputFile)) {
             throw new Exception("Input file does not exist: {$inputFile}");
@@ -29,8 +29,10 @@ class Frequency
             throw new Exception('File was not opened properly');
         }
 
-        if (file_exists(self::STOP_WORD_FILE)) {
-            $stopWordsString = file_get_contents(self::STOP_WORD_FILE);
+        $stopWordsFile = __DIR__ . "/../" . self::STOP_WORD_FILE;
+
+        if (file_exists($stopWordsFile)) {
+            $stopWordsString = file_get_contents($stopWordsFile);
         }
 
         if (!empty($stopWordsString)) {
