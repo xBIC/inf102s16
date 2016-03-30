@@ -15,24 +15,30 @@ class Frequency
 
     protected $stopWords = [];
 
+    protected $inputFile = "";
+
+    protected $stopWordsFile = "";
+
+    public function __construct()
+    {
+        $this->inputFile = $inputFile = __DIR__ . "/../" . $this->getInputFile();
+        $this->stopWordsFile = $stopWordsFile = __DIR__ . "/../" . self::STOP_WORD_FILE;
+    }
+
     public function run()
     {
-        $inputFile = __DIR__ . "/../" . $this->getInputFile();
-
-        if (!file_exists($inputFile)) {
-            throw new Exception("Input file does not exist: {$inputFile}");
+        if (!file_exists($this->inputFile)) {
+            throw new Exception("Input file does not exist: {$this->inputFile}");
         }
 
-        $file = fopen($inputFile, "r");
+        $file = fopen($this->inputFile, "r");
 
         if (empty($file)) {
             throw new Exception('File was not opened properly');
         }
 
-        $stopWordsFile = __DIR__ . "/../" . self::STOP_WORD_FILE;
-
-        if (file_exists($stopWordsFile)) {
-            $stopWordsString = file_get_contents($stopWordsFile);
+        if (file_exists($this->stopWordsFile)) {
+            $stopWordsString = file_get_contents($this->stopWordsFile);
         }
 
         if (!empty($stopWordsString)) {
@@ -63,9 +69,18 @@ class Frequency
      */
     private function parseLine($line)
     {
+        // Includes numeric characters
         //$wordArray = preg_split("/\W+|_/", $line);
-        //$wordArray = preg_split("/[^a-zA-Z']/", $line);
-        //$wordArray = preg_split("/[^a-zA-Z']*[^-a-zA-Z']/", $line);
+
+        // Does not account for hyphenated words
+        // Accounts for apostrophes in words (do not want as per teacher's code)
+        //$wordArray = preg_split("/[^a-z']/", $line);
+
+        // Does account for hyphenated words (do not want as per teacher's code)
+        // Accounts for apostrophes in words (do not want as per teacher's code)
+        //$wordArray = preg_split("/[^a-z']*[^-a-z']/", $line); // Accounts for hyphenated words
+
+
         $wordArray = preg_split("/[0-9\W_]/", $line);
 
         if (empty($wordArray)) {
