@@ -63,9 +63,10 @@ class Frequency
      */
     private function parseLine($line)
     {
-        $wordArray = preg_split("/\W+|_/", $line);
+        //$wordArray = preg_split("/\W+|_/", $line);
         //$wordArray = preg_split("/[^a-zA-Z']/", $line);
         //$wordArray = preg_split("/[^a-zA-Z']*[^-a-zA-Z']/", $line);
+        $wordArray = preg_split("/[0-9\W_]/", $line);
 
         if (empty($wordArray)) {
             return;
