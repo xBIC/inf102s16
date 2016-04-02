@@ -4,7 +4,7 @@ class Frequency
 {
     const MIN_WORD_LENGTH = 2;
     const NUM_TOP_RESULTS = 25;
-    const STOP_WORD_FILE = "../stop_words.txt";
+    const STOP_WORD_FILE = "stop_words.txt";
 
     /**
      * Contains a key value pair of [ word : count ]
@@ -17,21 +17,10 @@ class Frequency
 
     public function run()
     {
-        $inputFile = $this->getInputFile();
-        
-        if (!is_string($inputFile)) {
-            throw new Exception("Input file name must be a string, not " . gettype($inputFile));
-        }
-        
-        if (strpos($inputFile, '../') !== 0) {
-            $inputFile = "../{$inputFile}";
-        }
+        $inputFilePath = $this->getInputFilePath();
+        $stopWordsFile = $this->formatStopWordsPath();
 
-        if (!file_exists($inputFile)) {
-            throw new Exception("Input file does not exist: {$inputFile}");
-        }
-
-        $file = fopen($inputFile, "r");
+        $file = fopen($inputFilePath, "r");
 
         if (empty($file)) {
             throw new Exception('File was not opened properly');
@@ -129,18 +118,32 @@ class Frequency
 
 
     /**
-     * Retrieves the input file name from the command line (first argument)
+     * Retrieves the input file path from the command line (first argument)
      *
      * @return mixed
      * @throws Exception
      */
-    private function getInputFile()
+    private function getInputFilePath()
     {
         if (empty($_SERVER['argv'][1])) {
             throw new Exception('Must specify input file to run script');
         }
+        
+        $inputFile = $_SERVER['argv'][1];
+        
+        if (!is_string($inputFile)) {
+            throw new Exception("Input file path must be a string, not " . gettype($inputFile));
+        }
+        
+        if (strpos($inputFile, '../') !== 0 && basename(getcwd()) === basename(__DIR__)) {
+            $inputFile = "../{$inputFile}";
+        }
 
-        return $_SERVER['argv'][1];
+        if (!file_exists($inputFile)) {
+            throw new Exception("Input file does not exist: {$inputFile}");
+        }
+
+        return $inputFile;
     }
 
     private function printTopResults()
