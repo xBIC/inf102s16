@@ -30,7 +30,7 @@ class Frequency
     protected $frequencyArray = [];
 
     /**
-     * Array all the stop words to ignore
+     * Array of all the stop words to ignore
      *
      * @var array
      */
