@@ -91,7 +91,8 @@ class Frequency
      */
     private function parseLine($line)
     {
-        $wordArray = preg_split("/[\W_]/", $line);
+        // Split on numbers, non-words characters, and underscores
+        $wordArray = preg_split("/[0-9\W_]/", $line);
 
         if (empty($wordArray)) {
             return;
