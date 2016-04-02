@@ -1,9 +1,25 @@
 <?PHP
 
+/**
+ * Parses a file into words, and returns the top used (or bottom used) N number of words
+ *
+ * Class Frequency
+ */
 class Frequency
 {
+    /**
+     * Smallest size word to allow
+     */
     const MIN_WORD_LENGTH = 2;
+
+    /**
+     * How many results to display at the end
+     */
     const NUM_TOP_RESULTS = 25;
+
+    /**
+     * Name of the stopwords file
+     */
     const STOP_WORD_FILE = "stop_words.txt";
 
     /**
@@ -13,42 +29,59 @@ class Frequency
      */
     protected $frequencyArray = [];
 
+    /**
+     * Array all the stop words to ignore
+     *
+     * @var array
+     */
     protected $stopWords = [];
 
+    /**
+     * The standard run function to execute the script
+     *
+     * @throws Exception
+     */
     public function run()
     {
-        $inputFilePath = $this->getInputFilePath();
-        $stopWordsFile = $this->formatStopWordsPath();
+        try {
+            $inputFilePath = $this->getInputFilePath();
+            $stopWordsFile = $this->formatStopWordsPath();
 
-        $file = fopen($inputFilePath, "r");
+            $file = fopen($inputFilePath, "r");
 
-        if (empty($file)) {
-            throw new Exception('File was not opened properly');
-        }
-
-        if (file_exists(self::STOP_WORD_FILE)) {
-            $stopWordsString = file_get_contents(self::STOP_WORD_FILE);
-        }
-
-        if (!empty($stopWordsString)) {
-            $this->stopWords = explode(',', $stopWordsString);
-        }
-
-        while (!feof($file)) {
-            $line = fgets($file);
-
-            if (empty($line)) {
-                continue;
-            } else {
-                $line = strtolower($line);
+            if (empty($file)) {
+                throw new Exception('File was not opened properly');
             }
 
-            $this->parseLine($line);
+            // Having a stopwords file is not a requirement to run the script
+            // Although the expected response would not be returned, the input file would still be parsed
+            if (file_exists($stopWordsFile)) {
+                $stopWordsString = file_get_contents($stopWordsFile);
+            }
+
+            if (!empty($stopWordsString)) {
+                $this->stopWords = explode(',', $stopWordsString);
+            }
+
+            // Loop through the file line by line until the EOF is reached
+            while (!feof($file)) {
+                $line = fgets($file);
+
+                if (empty($line)) {
+                    continue;
+                } else {
+                    $line = strtolower($line);
+                }
+
+                $this->parseLine($line);
+            }
+
+            $this->sortFrequencyArray();
+
+            $this->printTopResults();
+        } catch (Exception $e) {
+            $this->handleException($e);
         }
-
-        $this->sortFrequencyArray();
-
-        $this->printTopResults();
     }
 
     /**
@@ -101,6 +134,8 @@ class Frequency
     }
 
     /**
+     * Sort the frequencyArray in specified order
+     *
      * @param string $order
      */
     private function sortFrequencyArray($order = "desc")
@@ -128,13 +163,13 @@ class Frequency
         if (empty($_SERVER['argv'][1])) {
             throw new Exception('Must specify input file to run script');
         }
-        
+
         $inputFile = $_SERVER['argv'][1];
-        
+
         if (!is_string($inputFile)) {
             throw new Exception("Input file path must be a string, not " . gettype($inputFile));
         }
-        
+
         if (strpos($inputFile, '../') !== 0 && basename(getcwd()) === basename(__DIR__)) {
             $inputFile = "../{$inputFile}";
         }
@@ -163,6 +198,39 @@ class Frequency
 
             $totalOutput++;
         }
+    }
+
+    /**
+     * Format the stop words path depending on which directory the script was run from
+     *
+     * @return string
+     * @throws Exception
+     */
+    private function formatStopWordsPath()
+    {
+        if (empty(self::STOP_WORD_FILE)) {
+            throw new Exception('The stopwords file path has not been set in the script');
+        }
+
+        if (basename(getcwd()) === basename(__DIR__)) {
+            return '../' . self::STOP_WORD_FILE;
+        }
+
+        return self::STOP_WORD_FILE;
+    }
+
+    /**
+     * Handle any exception that is thrown during the running of the script and output a formatted error response
+     *
+     * @param Exception $e
+     */
+    private function handleException(Exception $e)
+    {
+        print_r(PHP_EOL . 'The script has exited early with an error on line #' . $e->getLine() . PHP_EOL . PHP_EOL);
+        print_r('Error: ' . $e->getMessage() . PHP_EOL . PHP_EOL);
+        print_r('Stack Trace:' . PHP_EOL);
+        print_r($e->getTraceAsString() . PHP_EOL . PHP_EOL);
+        print_r('*** Please see the readme.md file for information on how to run this script ***' . PHP_EOL . PHP_EOL);
     }
 }
 
