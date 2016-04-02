@@ -4,7 +4,7 @@ class Frequency
 {
     const MIN_WORD_LENGTH = 2;
     const NUM_TOP_RESULTS = 25;
-    const STOP_WORD_FILE = "stop_words.txt";
+    const STOP_WORD_FILE = "../stop_words.txt";
 
     /**
      * Contains a key value pair of [ word : count ]
@@ -15,30 +15,30 @@ class Frequency
 
     protected $stopWords = [];
 
-    protected $inputFile = "";
-
-    protected $stopWordsFile = "";
-
-    public function __construct()
-    {
-        $this->inputFile = $inputFile = __DIR__ . "/../" . $this->getInputFile();
-        $this->stopWordsFile = $stopWordsFile = __DIR__ . "/../" . self::STOP_WORD_FILE;
-    }
-
     public function run()
     {
-        if (!file_exists($this->inputFile)) {
-            throw new Exception("Input file does not exist: {$this->inputFile}");
+        $inputFile = $this->getInputFile();
+        
+        if (!is_string($inputFile)) {
+            throw new Exception("Input file name must be a string, not " . gettype($inputFile));
+        }
+        
+        if (strpos($inputFile, '../') !== 0) {
+            $inputFile = "../{$inputFile}";
         }
 
-        $file = fopen($this->inputFile, "r");
+        if (!file_exists($inputFile)) {
+            throw new Exception("Input file does not exist: {$inputFile}");
+        }
+
+        $file = fopen($inputFile, "r");
 
         if (empty($file)) {
             throw new Exception('File was not opened properly');
         }
 
-        if (file_exists($this->stopWordsFile)) {
-            $stopWordsString = file_get_contents($this->stopWordsFile);
+        if (file_exists(self::STOP_WORD_FILE)) {
+            $stopWordsString = file_get_contents(self::STOP_WORD_FILE);
         }
 
         if (!empty($stopWordsString)) {
@@ -69,19 +69,9 @@ class Frequency
      */
     private function parseLine($line)
     {
-        // Includes numeric characters
-        //$wordArray = preg_split("/\W+|_/", $line);
-
-        // Does not account for hyphenated words
-        // Accounts for apostrophes in words (do not want as per teacher's code)
-        //$wordArray = preg_split("/[^a-z']/", $line);
-
-        // Does account for hyphenated words (do not want as per teacher's code)
-        // Accounts for apostrophes in words (do not want as per teacher's code)
-        //$wordArray = preg_split("/[^a-z']*[^-a-z']/", $line); // Accounts for hyphenated words
-
-
-        $wordArray = preg_split("/[0-9\W_]/", $line);
+        $wordArray = preg_split("/\W+|_/", $line);
+        //$wordArray = preg_split("/[^a-zA-Z']/", $line);
+        //$wordArray = preg_split("/[^a-zA-Z']*[^-a-zA-Z']/", $line);
 
         if (empty($wordArray)) {
             return;
