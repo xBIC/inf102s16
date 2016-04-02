@@ -91,9 +91,7 @@ class Frequency
      */
     private function parseLine($line)
     {
-        $wordArray = preg_split("/\W+|_/", $line);
-        //$wordArray = preg_split("/[^a-zA-Z']/", $line);
-        //$wordArray = preg_split("/[^a-zA-Z']*[^-a-zA-Z']/", $line);
+        $wordArray = preg_split("/[\W_]/", $line);
 
         if (empty($wordArray)) {
             return;
@@ -175,10 +173,29 @@ class Frequency
         }
 
         if (!file_exists($inputFile)) {
-            throw new Exception("Input file does not exist: {$inputFile}");
+            throw new Exception("Input file does not exist: " . getcwd() . "/{$inputFile}");
         }
 
         return $inputFile;
+    }
+    
+    /**
+     * Format the stop words path depending on which directory the script was run from
+     *
+     * @return string
+     * @throws Exception
+     */
+    private function formatStopWordsPath()
+    {
+        if (empty(self::STOP_WORD_FILE)) {
+            throw new Exception('The stopwords file path has not been set in the script');
+        }
+
+        if (basename(getcwd()) === basename(__DIR__)) {
+            return '../' . self::STOP_WORD_FILE;
+        }
+
+        return self::STOP_WORD_FILE;
     }
 
     private function printTopResults()
@@ -198,25 +215,6 @@ class Frequency
 
             $totalOutput++;
         }
-    }
-
-    /**
-     * Format the stop words path depending on which directory the script was run from
-     *
-     * @return string
-     * @throws Exception
-     */
-    private function formatStopWordsPath()
-    {
-        if (empty(self::STOP_WORD_FILE)) {
-            throw new Exception('The stopwords file path has not been set in the script');
-        }
-
-        if (basename(getcwd()) === basename(__DIR__)) {
-            return '../' . self::STOP_WORD_FILE;
-        }
-
-        return self::STOP_WORD_FILE;
     }
 
     /**
