@@ -39,9 +39,12 @@ function scan($data)
  * @param array $wordList
  * @return mixed
  */
-function removeStopWords(array $wordList)
+function removeStopWords(array $info)
 {
-    $stopWords = file_get_contents('../stop_words.txt');
+    $wordList = $info[0];
+    $stopWordsPath = $info[1];
+
+    $stopWords = file_get_contents($stopWordsPath);
     $stopWordsList = explode(',', $stopWords);
 
     foreach ($wordList as $key => $word) {
@@ -103,4 +106,4 @@ function printAll(array $frequencyList)
     }
 }
 
-printAll(array_slice(sortDesc(frequencies(removeStopWords(scan(filterCharsAndNormalize(readAFile($_SERVER['argv'][1])))))), 0, 25));
+printAll(array_slice(sortDesc(frequencies(removeStopWords([scan(filterCharsAndNormalize(readAFile($_SERVER['argv'][1]))), $_SERVER['argv'][2]]))), 0, 25));
