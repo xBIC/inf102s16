@@ -1,0 +1,5 @@
+What is the cyclomatic complexity of the example program?
+
+CC = E - N + 2P
+CC = 56 - 46 + 2
+CC = 12
