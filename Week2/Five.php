@@ -41,10 +41,10 @@ function scan($data)
  */
 function removeStopWords(array $info)
 {
-    $wordList = $info[0];
+    $wordList      = $info[0];
     $stopWordsPath = $info[1];
 
-    $stopWords = file_get_contents($stopWordsPath);
+    $stopWords     = file_get_contents($stopWordsPath);
     $stopWordsList = explode(',', $stopWords);
 
     foreach ($wordList as $key => $word) {
