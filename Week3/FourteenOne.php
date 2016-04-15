@@ -49,19 +49,19 @@ class WordFrequencyFramework
     public function run($pathToFile)
     {
         foreach ($this->_loadEventHandlers as $h) {
-            $class = $h[0];
+            $class  = $h[0];
             $method = $h[1];
             $class->$method($pathToFile);
         }
 
         foreach ($this->_doworkEventHandlers as $h) {
-            $class = $h[0];
+            $class  = $h[0];
             $method = $h[1];
             $class->$method();
         }
 
         foreach ($this->_endEventHandlers as $h) {
-            $class = $h[0];
+            $class  = $h[0];
             $method = $h[1];
             $class->$method();
         }
@@ -99,7 +99,7 @@ class DataStorage
      */
     public function __load($pathToFile)
     {
-        $f = file_get_contents($pathToFile);
+        $f           = file_get_contents($pathToFile);
         $this->_data = explode(' ', strtolower(preg_replace("/[\W_]+/", ' ', $f)));
     }
 
@@ -111,7 +111,7 @@ class DataStorage
         foreach ($this->_data as $w) {
             if (strlen($w) >= 2 && !$this->_stopWordFilter->isStopWord($w)) {
                 foreach ($this->_wordEventHandler as $h) {
-                    $class = $h[0];
+                    $class  = $h[0];
                     $method = $h[1];
                     $class->$method($w);
                 }
@@ -222,8 +222,8 @@ class WordFrequencyCounter
     }
 }
 
-$wfapp = new WordFrequencyFramework();
-$stopWordFilter = new StopWordFilter($wfapp);
-$dataStorage = new DataStorage($wfapp, $stopWordFilter);
+$wfapp                = new WordFrequencyFramework();
+$stopWordFilter       = new StopWordFilter($wfapp);
+$dataStorage          = new DataStorage($wfapp, $stopWordFilter);
 $wordFrequencyCounter = new WordFrequencyCounter($wfapp, $dataStorage);
 $wfapp->run($_SERVER['argv'][1]);
