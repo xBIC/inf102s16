@@ -20,7 +20,7 @@ function extractWords(stdClass $obj, $path_to_file)
 function loadStopWords(stdClass $obj)
 {
     $f              = file_get_contents('../stop_words.txt');
-    $obj->stopWords = explode(',', $f);
+    $obj->stopWords = array_merge(explode(',', $f), range('a', 'z'));
 }
 
 /**
@@ -77,7 +77,7 @@ $dsoWords = $dataStorageObject->words;
 foreach ($dsoWords() as $w) {
     $swoIsStopWord = $stopWordsObject->isStopWord;
 
-    if (strlen($w) >= 2 && !$swoIsStopWord($w)) {
+    if (!$swoIsStopWord($w)) {
         $wfoIncrementCount = $wordFrequencyObject->incrementCount;
         $wfoIncrementCount($w);
     }
