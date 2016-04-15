@@ -71,10 +71,15 @@ foreach ($dsoWords() as $w)
     }
 }
 
-$wfoSorted = $wordFrequencyObject->sorted;
-$wordFreqs = $wfoSorted();
+$wordFrequencyObject->top25 = function () use ($wordFrequencyObject) {
+    $wfoSorted = $wordFrequencyObject->sorted;
+    $wordFreqs = $wfoSorted();
 
-foreach (array_splice($wordFreqs, 0, 25) as $k => $w)
-{
-    echo $k . ' - ' . $w . PHP_EOL;
-}
+    foreach (array_splice($wordFreqs, 0, 25) as $k => $w)
+    {
+        echo $k . ' - ' . $w . PHP_EOL;
+    }
+};
+
+$wfoTop25 = $wordFrequencyObject->top25;
+$wfoTop25();
