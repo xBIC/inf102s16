@@ -67,7 +67,7 @@ function loadStopWords($stopWordsString, array &$stopWords)
 }
 
 $wordFrequencies = [];
-$stopWords = [];
+$stopWords       = [];
 
 preg_match_all("/[a-z]{2,}/", strtolower(file_get_contents($_SERVER['argv'][1])), $words);
 
