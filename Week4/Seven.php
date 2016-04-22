@@ -50,7 +50,7 @@ function printWords(array $wordFreqs)
 /**
  * Parse the csv $stopWordsString into an array of stop words
  *
- * @param $stopWordsString
+ * @param string $stopWordsString
  * @param array $stopWords
  */
 function loadStopWords($stopWordsString, array &$stopWords)
