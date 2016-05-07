@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Includes code for 24.1, 24.2, and extra credit 24.3
+ */
+
 class TFQuarantine
 {
     /**
@@ -84,6 +88,7 @@ function extractWords($pathToFile)
     $_f = function () use ($pathToFile) {
         // Added for 24.2
         print_r('EXECUTED: extractWords' . PHP_EOL);
+
         $f = file_get_contents($pathToFile);
         return explode(' ', strtolower(preg_replace("/[\W_]+/", ' ', $f)));
     };
