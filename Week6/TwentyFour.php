@@ -143,7 +143,7 @@ function sortFreqs(array $wordFreqs)
 }
 
 /**
- * Print the top 25 most frequent words
+ * Print the top 25 most frequent words (for 24.1 + 24.2)
  *
  * @param array $wordFreqs
  * @return string
@@ -162,10 +162,29 @@ function top25Freqs(array $wordFreqs)
     return $top25;
 }
 
+/**
+ * Print the top 25 most frequent words (for 24.3)
+ *
+ * @param array $wordFreqs
+ */
+function top25Freqs2(array $wordFreqs)
+{
+    // Added for 24.2
+    print_r('EXECUTED: top25Freqs2' . PHP_EOL . PHP_EOL);
+
+    $_f = function () use ($wordFreqs) {
+        foreach (array_slice($wordFreqs, 0, 25) as $word => $freq) {
+            print_r($word . ' - ' . $freq . PHP_EOL);
+        }
+    };
+
+    return $_f;
+}
+
 (new TFQuarantine('getInput'))
     ->bind('extractWords')
     ->bind('removeStopWords')
     ->bind('frequencies')
     ->bind('sortFreqs')
-    ->bind('top25Freqs')
+    ->bind('top25Freqs2')
     ->execute();
