@@ -1,21 +1,17 @@
 <?php
 
 /**
- * Character generator for the input file
+ * Line generator for input file
  *
  * @param string $filename
  * @return Generator
  */
-function characters($filename)
+function lines($filename)
 {
     $f = fopen($filename, "r");
     while (($line = fgets($f)) !== false) {
-        foreach (str_split($line) as $c) {
-            yield $c;
-        }
+        yield $line;
     }
-
-    fclose($f);
 }
 
 /**
@@ -26,23 +22,11 @@ function characters($filename)
  */
 function allWords($filename)
 {
-    $startChar = true;
+    foreach (lines($filename) as $line) {
+        $words = explode(' ', strtolower(preg_replace("/[\W_]+/", ' ', $line)));
 
-    foreach (characters($filename) as $c) {
-        if ($startChar == true) {
-            $word = "";
-
-            if (ctype_alnum($c)) {
-                $word      = strtolower($c);
-                $startChar = false;
-            } else {
-                continue;
-            }
-        } else {
-            if (ctype_alnum($c)) {
-                $word .= strtolower($c);
-            } else {
-                $startChar = true;
+        foreach ($words as $word) {
+            if (!empty($word)) {
                 yield $word;
             }
         }
