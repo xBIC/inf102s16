@@ -71,15 +71,3 @@ if (!file_exists('tf.db')) {
 } else {
     $connection = new DB('tf.db');
 }
-
-$words = $connection->query("SELECT `word_value`, COUNT(1) as `frequency` FROM `words` GROUP BY `words`.`word_value` ORDER BY `frequency` DESC");
-
-for ($i = 0; $i < 25; $i++) {
-    $row = $words->fetchArray(SQLITE3_ASSOC);
-
-    if ($row === false) {
-        break;
-    }
-
-    print_r($row['word_value'] . ' - ' . $row['frequency'] . PHP_EOL);
-}
