@@ -14,8 +14,8 @@ function errorState()
 
 function defaultGetHandler($args)
 {
-    $rep   = 'What would you like to do?';
-    $rep   .= PHP_EOL . '1 - Quit' . PHP_EOL . '2 - Upload file';
+    $rep = 'What would you like to do?';
+    $rep .= PHP_EOL . '1 - Quit' . PHP_EOL . '2 - Upload file';
 
     $links     = new stdClass();
     $links->n1 = ['post', 'execution', null];
@@ -107,7 +107,7 @@ function wordGetHandler($args)
     $rep .= PHP_EOL . '1 - Quit' . PHP_EOL . '2 - Upload file';
     $rep .= PHP_EOL . '3 - See next most-frequently occurring word';
 
-    $links = new stdClass();
+    $links     = new stdClass();
     $links->n1 = ['post', 'execution', null];
     $links->n2 = ['get', 'file_form', null];
     $links->n3 = ['get', 'word', [$filename, $wordIndex + 1]];
@@ -122,10 +122,10 @@ function wordGetHandler($args)
 
 $handlers = [
     'post_execution' => 'quitHandler',
-    'get_default' => 'defaultGetHandler',
-    'get_file_form' => 'uploadGetHandler',
-    'post_file' => 'uploadPostHandler',
-    'get_word' => 'wordGetHandler'
+    'get_default'    => 'defaultGetHandler',
+    'get_file_form'  => 'uploadGetHandler',
+    'post_file'      => 'uploadPostHandler',
+    'get_word'       => 'wordGetHandler'
 ];
 
 function handleRequest($verb, $uri, $args)
@@ -159,7 +159,7 @@ function renderAndGetInput($stateRepresentation, $links)
         }
     } elseif (is_array($links)) {
         if ('post' == $links[0]) {
-            $input = trim(readline());
+            $input   = trim(readline());
             $links[] = [$input];
             return $links;
         } else {
@@ -173,9 +173,9 @@ function renderAndGetInput($stateRepresentation, $links)
 $request = ['get', 'default', null];
 
 while (true) {
-    $hr = handleRequest($request[0], $request[1], $request[2]);
+    $hr                  = handleRequest($request[0], $request[1], $request[2]);
     $stateRepresentation = $hr[0];
-    $links = $hr[1];
+    $links               = $hr[1];
 
     $request = renderAndGetInput($stateRepresentation, $links);
 }
