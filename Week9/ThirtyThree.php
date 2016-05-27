@@ -112,6 +112,11 @@ function wordGetHandler($args)
     $links->n2 = ['get', 'file_form', null];
     $links->n3 = ['get', 'word', [$filename, $wordIndex + 1]];
 
+    if ($wordIndex > 0) {
+        $rep .= PHP_EOL . '4 - See previous most-frequently occurring word';
+        $links->n4 = ['get', 'word', [$filename, $wordIndex - 1]];
+    }
+
     return [$rep, $links];
 }
 
